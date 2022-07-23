@@ -1,0 +1,32 @@
+name: 打包应用并上传阿里云
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    # runs-on 指定job任务运行所需要的虚拟机环境(必填字段)
+    runs-on: ubuntu-latest
+    steps:
+      # 获取源码
+      - name: 迁出代码
+        # 使用action库 actions/checkout获取源码
+        uses: actions/checkout@main
+      
+      # 上传阿里云
+      - name: 发布到阿里云
+        uses: easingthemes/ssh-deploy@v2.1.1
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.ALIYUN_ECS_ECDSA_PRI }}
+          # scp参数
+          ARGS: "-avzr --delete"
+          # 源目录
+          SOURCE: "/"
+          # 服务器ip: 换成你的服务器ip
+          REMOTE_HOST: "39.108.225.213"
+          # 用户
+          REMOTE_USER: "root"
+          # 目标地址
+          TARGET: "/usr/local/study/"
